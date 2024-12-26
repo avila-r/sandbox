@@ -30,10 +30,14 @@ fn main() {
 }
 
 fn max_substring(s: String, max_occurrences: i32) -> Option<usize> {
-    let (mut left, mut right) = (0, 0);
-    let (chars, mut frequencies, mut max) = (s.chars().collect::<Vec<char>>(), std::collections::HashMap::new(), 0);
+    let mut left = 0;
+    let (chars, mut frequencies, mut max) = (
+        s.chars().collect::<Vec<char>>(),
+        std::collections::HashMap::new(),
+        0,
+    );
 
-    while right < chars.len() {
+    for right in 0..chars.len() {
         frequencies
             .entry(chars[right])
             .and_modify(|v| *v += 1)
@@ -45,7 +49,6 @@ fn max_substring(s: String, max_occurrences: i32) -> Option<usize> {
         }
 
         max = max.max(right - left + 1);
-        right += 1;
     }
 
     Some(max)
