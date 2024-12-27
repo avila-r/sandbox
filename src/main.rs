@@ -1,3 +1,5 @@
+pub mod arrays;
+
 fn main() {
     println! {
         "Reverse Words in a String III: {}",
