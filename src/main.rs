@@ -1,4 +1,5 @@
 pub mod arrays;
+pub mod types;
 
 fn main() {
     println! {
