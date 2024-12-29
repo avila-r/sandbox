@@ -11,6 +11,17 @@ pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     vec![]
 }
 
+pub fn contains_nearby_duplicate(nums: Vec<i32>, _k: i32) -> Result<bool, String> {
+    use std::collections::HashMap;
+
+    let mut _frequencies: HashMap<i32, usize> = HashMap::new();
+
+    for (i, &n) in nums.iter().enumerate() {
+    }
+
+    Err("no solution implemented yet".to_string())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -52,5 +63,41 @@ mod tests {
                 case.expected
             );
         });
+    }
+
+    #[test]
+    fn test_nearby_duplicate() -> Result<(), String> {
+        struct TestCase {
+            numbers: Vec<i32>,
+            max_distance: i32,
+            expected: bool,
+        }
+
+        let cases = vec![
+            TestCase {
+                numbers: vec![1, 2, 3, 1],
+                max_distance: 3,
+                expected: true,
+            },
+            TestCase {
+                numbers: vec![1, 0, 1, 1],
+                max_distance: 1,
+                expected: true,
+            },
+            TestCase {
+                numbers: vec![1, 2, 3, 1, 2, 3],
+                max_distance: 2,
+                expected: false,
+            },
+        ];
+
+        for case in cases {
+            match contains_nearby_duplicate(case.numbers.clone(), case.max_distance.clone()) {
+                Ok(result) => assert_eq!(result, case.expected),
+                Err(message) => return Err(message),
+            };
+        }
+
+        Ok(())
     }
 }
