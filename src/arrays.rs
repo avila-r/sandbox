@@ -1,25 +1,34 @@
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
-    let mut map = std::collections::HashMap::new();
+    use std::collections::HashMap;
+
+    let mut appearances: HashMap<i32, usize> = HashMap::new();
 
     for (i, &n) in nums.iter().enumerate() {
-        if let Some(&j) = map.get(&(target - n)) {
+        if let Some(&j) = appearances.get(&(target - n)) {
             return vec![j as i32, i as i32];
         }
-        map.insert(n, i);
+
+        appearances.insert(n, i);
     }
 
     vec![]
 }
 
-pub fn contains_nearby_duplicate(nums: Vec<i32>, _k: i32) -> Result<bool, String> {
+pub fn contains_nearby_duplicate(nums: Vec<i32>, k: i32) -> bool {
     use std::collections::HashMap;
 
-    let mut _frequencies: HashMap<i32, usize> = HashMap::new();
+    let mut appearances: HashMap<i32, usize> = HashMap::new();
 
     for (i, &n) in nums.iter().enumerate() {
+        match appearances.get(&n) {
+            Some(&j) if j.abs_diff(i) <= (k as usize) => return true,
+            _ => (),
+        };
+
+        appearances.insert(n, i);
     }
 
-    Err("no solution implemented yet".to_string())
+    false
 }
 
 #[cfg(test)]
@@ -92,9 +101,9 @@ mod tests {
         ];
 
         for case in cases {
-            match contains_nearby_duplicate(case.numbers.clone(), case.max_distance.clone()) {
-                Ok(result) => assert_eq!(result, case.expected),
-                Err(message) => return Err(message),
+            assert_eq! {
+               contains_nearby_duplicate(case.numbers.clone(), case.max_distance.clone()),
+               case.expected
             };
         }
 
