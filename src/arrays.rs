@@ -18,14 +18,14 @@ pub fn reverse_words_iii(s: String) -> String {
     chars.iter().collect()
 }
 
-pub fn binary_search(numbers: Vec<i32>, target: i32, p: Option<(usize, usize)>) -> Option<i32> {
+pub fn binary_search(numbers: Vec<i32>, target: i32, p: Option<(usize, usize)>) -> Option<usize> {
     let (mut left, mut right) = p.unwrap_or((0, numbers.len()));
 
     while left < right {
         let mid: usize = left + (right - left) / 2;
 
         match numbers[mid] {
-            v if v.eq(&target) => return Some(mid as i32),
+            v if v.eq(&target) => return Some(mid),
             v if v < target => left = mid + 1,
             _ => right = mid,
         }
