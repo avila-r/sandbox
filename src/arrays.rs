@@ -31,6 +31,22 @@ pub fn contains_nearby_duplicate(nums: Vec<i32>, k: i32) -> bool {
     false
 }
 
+pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
+    if nums.is_empty() {
+        return 0;
+    }
+
+    let mut left = 0;
+    for right in 1..nums.len() {
+        if nums[left] != nums[right] {
+            left += 1;
+            nums[left] = nums[right];
+        }
+    }
+
+    (left + 1) as i32
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -75,7 +91,7 @@ mod tests {
     }
 
     #[test]
-    fn test_nearby_duplicate() -> Result<(), String> {
+    fn test_nearby_duplicate() {
         struct TestCase {
             numbers: Vec<i32>,
             max_distance: i32,
@@ -106,7 +122,14 @@ mod tests {
                case.expected
             };
         }
+    }
 
-        Ok(())
+    #[test]
+    fn test_remove_duplicates() {
+        let (mut input, expected) = (vec![0, 0, 1, 1, 1, 2, 2, 3, 3, 4], 5);
+
+        let result = remove_duplicates(&mut input);
+
+        assert_eq! { result, expected };
     }
 }

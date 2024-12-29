@@ -18,13 +18,20 @@ def reverse_words_in_a_string_iii(s: str) -> str:
     
     return ''.join(s)
 
-def two_sum(nums: List[str], target: int) -> List[str]:
+def two_sum(nums: list[str], target: int) -> list[str]:
     appearances = {}
     for i, n in enumerate(nums):
         j = appearances.get(n)
         if j is not None:
             return [j, i]
         appearances[target - n] = i
-
-string = "Let's take LeetCode contest"
-print(reverse_words_in_a_string_iii(string))
+        
+def remove_duplicates(nums: list[int]) -> int:
+    if not nums:
+        return 0
+    left = 0
+    for right in range(1, len(nums)):
+        if nums[left] != nums[right]:
+            left += 1
+            nums[left] = nums[right]
+    return left + 1
