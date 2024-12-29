@@ -18,6 +18,22 @@ pub fn reverse_words_iii(s: String) -> String {
     chars.iter().collect()
 }
 
+pub fn binary_search(numbers: Vec<i32>, target: i32, p: Option<(usize, usize)>) -> Option<i32> {
+    let (mut left, mut right) = p.unwrap_or((0, numbers.len()));
+
+    while left < right {
+        let mid: usize = left + (right - left) / 2;
+
+        match numbers[mid] {
+            v if v.eq(&target) => return Some(mid as i32),
+            v if v < target => left = mid + 1,
+            _ => right = mid,
+        }
+    }
+
+    None
+}
+
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     use std::collections::HashMap;
 
@@ -242,6 +258,49 @@ mod tests {
 
         cases.iter().for_each(|case| {
             let result = search_insert_position(case.numbers.clone(), case.target.clone());
+
+            assert_eq! {result, case.expected};
+        });
+    }
+
+    #[test]
+    fn test_binary_search() {
+        struct TestCase {
+            numbers: Vec<i32>,
+            target: i32,
+            expected: Option<i32>,
+        }
+
+        let cases = vec![
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 5,
+                expected: Some(2),
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 2,
+                expected: None,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 7,
+                expected: None,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 1,
+                expected: Some(0),
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 6,
+                expected: Some(3),
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = binary_search(case.numbers.clone(), case.target, None);
 
             assert_eq! {result, case.expected};
         });
