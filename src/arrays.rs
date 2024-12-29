@@ -47,6 +47,17 @@ pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
     (left + 1) as i32
 }
 
+pub fn remove_element(nums: &mut Vec<i32>, val: i32) -> i32 {
+    let mut left = 0;
+    for right in 0..nums.len() {
+        if nums[right] != val {
+            nums[left] = nums[right];
+            left += 1;
+        }
+    }
+    left as i32
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -131,5 +142,12 @@ mod tests {
         let result = remove_duplicates(&mut input);
 
         assert_eq! { result, expected };
+    }
+
+    #[test]
+    fn test_remove_element() {
+        let ((mut numbers, val), expected) = ((vec![0, 1, 2, 2, 3, 0, 4, 2], 2), 5);
+
+        assert_eq! { remove_element(&mut numbers, val), expected }
     }
 }
