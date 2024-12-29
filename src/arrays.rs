@@ -34,6 +34,27 @@ pub fn binary_search(numbers: Vec<i32>, target: i32, p: Option<(usize, usize)>) 
     None
 }
 
+pub fn exponential_search(numbers: Vec<i32>, target: i32) -> Option<usize> {
+    if numbers.first().eq(&Some(&target)) {
+        return Some(0);
+    }
+
+    let right = (1..)
+        .take_while(|&i| i < numbers.len() && numbers[i] < target)
+        .last()
+        .map_or(1, |i| i * 2)
+        .min(numbers.len());
+
+    if right < numbers.len() && numbers[right] == target {
+        return Some(right);
+    }
+
+    match binary_search(numbers, target, Some((right / 2, right))) {
+        Some(i) => Some(i),
+        _ => None,
+    }
+}
+
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     use std::collections::HashMap;
 
@@ -142,6 +163,135 @@ mod tests {
     }
 
     #[test]
+    fn test_search_insert_position() {
+        struct TestCase {
+            numbers: Vec<i32>,
+            target: i32,
+            expected: i32,
+        }
+
+        let cases = vec![
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 5,
+                expected: 2,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 2,
+                expected: 1,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 7,
+                expected: 4,
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = search_insert_position(case.numbers.clone(), case.target.clone());
+
+            assert_eq! {result, case.expected};
+        });
+    }
+
+    #[test]
+    fn test_binary_search() {
+        struct TestCase {
+            numbers: Vec<i32>,
+            target: i32,
+            expected: Option<usize>,
+        }
+
+        let cases = vec![
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 5,
+                expected: Some(2),
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 2,
+                expected: None,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 7,
+                expected: None,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 1,
+                expected: Some(0),
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 6,
+                expected: Some(3),
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = binary_search(case.numbers.clone(), case.target, None);
+
+            assert_eq! {result, case.expected};
+        });
+    }
+
+    #[test]
+    fn test_exponential_search() {
+        struct TestCase {
+            numbers: Vec<i32>,
+            target: i32,
+            expected: Option<usize>,
+        }
+
+        let cases = vec![
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 5,
+                expected: Some(2),
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 2,
+                expected: None,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 7,
+                expected: None,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 1,
+                expected: Some(0),
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 6,
+                expected: Some(3),
+            },
+            TestCase {
+                numbers: vec![],
+                target: 5,
+                expected: None,
+            },
+            TestCase {
+                numbers: vec![3],
+                target: 3,
+                expected: Some(0),
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = exponential_search(case.numbers.clone(), case.target);
+
+            assert_eq!(result, case.expected);
+        });
+    }
+
+    #[test]
     fn test_two_sum() {
         struct TestCase {
             numbers: Vec<i32>,
@@ -228,81 +378,5 @@ mod tests {
         let ((mut numbers, val), expected) = ((vec![0, 1, 2, 2, 3, 0, 4, 2], 2), 5);
 
         assert_eq! { remove_element(&mut numbers, val), expected }
-    }
-
-    #[test]
-    fn test_search_insert_position() {
-        struct TestCase {
-            numbers: Vec<i32>,
-            target: i32,
-            expected: i32,
-        }
-
-        let cases = vec![
-            TestCase {
-                numbers: vec![1, 3, 5, 6],
-                target: 5,
-                expected: 2,
-            },
-            TestCase {
-                numbers: vec![1, 3, 5, 6],
-                target: 2,
-                expected: 1,
-            },
-            TestCase {
-                numbers: vec![1, 3, 5, 6],
-                target: 7,
-                expected: 4,
-            },
-        ];
-
-        cases.iter().for_each(|case| {
-            let result = search_insert_position(case.numbers.clone(), case.target.clone());
-
-            assert_eq! {result, case.expected};
-        });
-    }
-
-    #[test]
-    fn test_binary_search() {
-        struct TestCase {
-            numbers: Vec<i32>,
-            target: i32,
-            expected: Option<i32>,
-        }
-
-        let cases = vec![
-            TestCase {
-                numbers: vec![1, 3, 5, 6],
-                target: 5,
-                expected: Some(2),
-            },
-            TestCase {
-                numbers: vec![1, 3, 5, 6],
-                target: 2,
-                expected: None,
-            },
-            TestCase {
-                numbers: vec![1, 3, 5, 6],
-                target: 7,
-                expected: None,
-            },
-            TestCase {
-                numbers: vec![1, 3, 5, 6],
-                target: 1,
-                expected: Some(0),
-            },
-            TestCase {
-                numbers: vec![1, 3, 5, 6],
-                target: 6,
-                expected: Some(3),
-            },
-        ];
-
-        cases.iter().for_each(|case| {
-            let result = binary_search(case.numbers.clone(), case.target, None);
-
-            assert_eq! {result, case.expected};
-        });
     }
 }
