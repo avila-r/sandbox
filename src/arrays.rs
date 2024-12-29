@@ -80,6 +80,24 @@ pub fn max_substring_with_occurrences(s: String, max_occurrences: i32) -> Option
     Some(max)
 }
 
+pub fn first_unique_char(s: String) -> i32 {
+    use std::collections::HashMap;
+
+    let mut frequencies: HashMap<char, i32> = HashMap::new();
+
+    s.chars().for_each(|c| {
+        frequencies.entry(c).and_modify(|i| *i += 1).or_insert(1);
+    });
+
+    for (i, c) in s.chars().enumerate() {
+        if frequencies[&c].eq(&1) {
+            return i as i32;
+        }
+    }
+
+    -1
+}
+
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     use std::collections::HashMap;
 
@@ -354,6 +372,43 @@ mod tests {
 
         cases.iter().for_each(|case| {
             let result = max_substring_with_occurrences(case.s.clone(), case.max_occurrences);
+
+            assert_eq!(result, case.expected);
+        });
+    }
+
+    #[test]
+    fn test_first_unique_char() {
+        struct TestCase {
+            s: String,
+            expected: i32,
+        }
+
+        let cases = vec![
+            TestCase {
+                s: "leetcode".to_string(),
+                expected: 0,
+            },
+            TestCase {
+                s: "loveleetcode".to_string(),
+                expected: 2,
+            },
+            TestCase {
+                s: "aabb".to_string(),
+                expected: -1,
+            },
+            TestCase {
+                s: "abcd".to_string(),
+                expected: 0,
+            },
+            TestCase {
+                s: "".to_string(),
+                expected: -1,
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = first_unique_char(case.s.clone());
 
             assert_eq!(result, case.expected);
         });
