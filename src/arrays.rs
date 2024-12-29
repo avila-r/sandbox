@@ -59,7 +59,7 @@ pub fn remove_element(nums: &mut Vec<i32>, val: i32) -> i32 {
 }
 
 pub fn search_insert_position(nums: Vec<i32>, target: i32) -> i32 {
-    use std::cmp::Ordering::{Less, Equal, Greater};
+    use std::cmp::Ordering::{Equal, Greater, Less};
 
     let (mut left, mut right) = (0, nums.len());
 
