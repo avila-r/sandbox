@@ -58,6 +58,24 @@ pub fn remove_element(nums: &mut Vec<i32>, val: i32) -> i32 {
     left as i32
 }
 
+pub fn search_insert_position(nums: Vec<i32>, target: i32) -> i32 {
+    use std::cmp::Ordering::{Less, Equal, Greater};
+
+    let (mut left, mut right) = (0, nums.len());
+
+    while left < right {
+        let mid = left + (right - left) / 2;
+
+        match nums[mid].cmp(&target) {
+            Less => left = mid + 1,
+            Equal => return mid as i32,
+            Greater => right = mid,
+        };
+    }
+
+    left as i32
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -149,5 +167,38 @@ mod tests {
         let ((mut numbers, val), expected) = ((vec![0, 1, 2, 2, 3, 0, 4, 2], 2), 5);
 
         assert_eq! { remove_element(&mut numbers, val), expected }
+    }
+
+    #[test]
+    fn test_search_insert_position() {
+        struct TestCase {
+            numbers: Vec<i32>,
+            target: i32,
+            expected: i32,
+        }
+
+        let cases = vec![
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 5,
+                expected: 2,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 2,
+                expected: 1,
+            },
+            TestCase {
+                numbers: vec![1, 3, 5, 6],
+                target: 7,
+                expected: 4,
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = search_insert_position(case.numbers.clone(), case.target.clone());
+
+            assert_eq! {result, case.expected};
+        });
     }
 }

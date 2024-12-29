@@ -46,3 +46,15 @@ def remove_element(nums: list[int], val: int) -> int:
         else:
             l += 1
     return r
+
+def search_insert_position(nums: list[int], val: int) -> int:
+    left, right = 0, len(nums)
+    while left < right:
+        mid = int(left + (right - left) / 2)
+        if nums[mid] < target:
+            left = mid + 1
+        elif nums[mid] > target:
+            right = mid
+        else:
+            return mid
+    return left
