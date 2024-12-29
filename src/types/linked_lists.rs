@@ -1,12 +1,18 @@
 use std::{cell::RefCell, fmt::Display, rc::Rc};
 
-type Link<T> = Rc<RefCell<DoubleLinkNode<T>>>;
+type Link<T> = Rc<RefCell<Node<T>>>;
 
 #[derive(Debug)]
-struct DoubleLinkNode<T> {
+struct Node<T> {
     pub value: T,
     pub next: Option<Link<T>>,
     pub prev: Option<Link<T>>,
+}
+
+#[derive(Debug)]
+pub struct LinkedList<T> {
+    head: Option<Link<T>>,
+    tail: Option<Link<T>>,
 }
 
 #[derive(Debug)]
@@ -15,14 +21,67 @@ pub struct DoubleLinkedList<T> {
     tail: Option<Link<T>>,
 }
 
-impl<T> DoubleLinkNode<T> {
+impl<T> Node<T> {
     pub fn new(value: T) -> Rc<RefCell<Self>> {
-        let cell = RefCell::new(DoubleLinkNode {
+        let cell = RefCell::new(Node {
             value,
             next: None,
             prev: None,
         });
         Rc::new(cell)
+    }
+}
+
+impl<T: Display + Clone> LinkedList<T> {
+    pub fn new() -> Self {
+        Self {
+            head: None,
+            tail: None,
+        }
+    }
+
+    pub fn of(values: &[T]) -> Self {
+        let mut list = Self::new();
+        for value in values {
+            list.append(value.clone());
+        }
+        list
+    }
+
+    pub fn append(&mut self, value: T) {
+        let new = Node::new(value);
+
+        match self.tail.take() {
+            Some(old) => {
+                old.borrow_mut().next = Some(new.clone());
+                self.tail = Some(new);
+            }
+            None => {
+                self.head = Some(new.clone());
+                self.tail = Some(new);
+            }
+        }
+    }
+
+    pub fn pop(&mut self) -> Option<T> {
+        if let Some(old) = self.head.take() {
+            self.head = old.borrow_mut().next.take();
+            if self.head.is_none() {
+                self.tail = None;
+            }
+            Some(Rc::try_unwrap(old).ok().unwrap().into_inner().value)
+        } else {
+            None
+        }
+    }
+
+    pub fn print_all(&self) {
+        let mut current = self.head.clone();
+        while let Some(node) = current {
+            print!("{} -> ", node.borrow().value);
+            current = node.borrow().next.clone();
+        }
+        println!("None");
     }
 }
 
@@ -43,7 +102,7 @@ impl<T: Display + Clone> DoubleLinkedList<T> {
     }
 
     pub fn append(&mut self, value: T) {
-        let new = DoubleLinkNode::new(value);
+        let new = Node::new(value);
 
         match self.tail.take() {
             Some(old) => {
@@ -78,6 +137,121 @@ impl<T: Display + Clone> DoubleLinkedList<T> {
             current = node.borrow().next.clone();
         }
         println!("None");
+    }
+}
+
+#[cfg(test)]
+mod linked_list_tests {
+    use super::*;
+
+    #[test]
+    fn test_append() {
+        let mut list = LinkedList::new();
+        list.append(10);
+        list.append(20);
+        list.append(30);
+
+        let expected = "10 -> 20 -> 30 -> None";
+        let mut current = list.head.clone();
+        let mut result = String::new();
+
+        while let Some(node) = current {
+            result.push_str(&format!("{} -> ", node.borrow().value));
+            current = node.borrow().next.clone();
+        }
+        result.push_str("None");
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_pop() {
+        let mut list = LinkedList::new();
+        list.append(10);
+        list.append(20);
+        list.append(30);
+
+        let popped = list.pop();
+        assert_eq!(popped, Some(10));
+
+        let expected = "20 -> 30 -> None";
+        let mut current = list.head.clone();
+        let mut result = String::new();
+
+        while let Some(node) = current {
+            result.push_str(&format!("{} -> ", node.borrow().value));
+            current = node.borrow().next.clone();
+        }
+        result.push_str("None");
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_pop_all() {
+        let mut list = LinkedList::new();
+        list.append(10);
+        list.append(20);
+        list.append(30);
+
+        assert_eq!(list.pop(), Some(10));
+        assert_eq!(list.pop(), Some(20));
+        assert_eq!(list.pop(), Some(30));
+
+        assert_eq!(list.pop(), None);
+    }
+
+    #[test]
+    fn test_append_and_pop_repeatedly() {
+        let mut list = LinkedList::new();
+
+        list.append(10);
+        assert_eq!(list.pop(), Some(10));
+
+        list.append(20);
+        list.append(30);
+        assert_eq!(list.pop(), Some(20));
+        assert_eq!(list.pop(), Some(30));
+
+        assert_eq!(list.pop(), None);
+    }
+
+    #[test]
+    fn test_print_empty_list() {
+        let list: LinkedList<i32> = LinkedList::new();
+        let expected = "None";
+        let mut current = list.head.clone();
+        let mut result = String::new();
+
+        while let Some(node) = current {
+            result.push_str(&format!("{} -> ", node.borrow().value));
+            current = node.borrow().next.clone();
+        }
+        result.push_str("None");
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_single_element() {
+        let mut list = LinkedList::new();
+
+        list.append(10);
+
+        let expected = "10 -> None";
+        let mut current = list.head.clone();
+        let mut result = String::new();
+
+        while let Some(node) = current {
+            result.push_str(&format!("{} -> ", node.borrow().value));
+            current = node.borrow().next.clone();
+        }
+        result.push_str("None");
+
+        assert_eq!(result, expected);
+
+        assert_eq!(list.pop(), Some(10));
+        assert_eq!(list.pop(), None);
     }
 }
 
