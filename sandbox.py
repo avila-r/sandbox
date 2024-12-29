@@ -17,6 +17,14 @@ def reverse_words_in_a_string_iii(s: str) -> str:
             l = i + 1
     
     return ''.join(s)
-    
+
+def two_sum(nums: List[str], target: int) -> List[str]:
+    appearances = {}
+    for i, n in enumerate(nums):
+        j = appearances.get(n)
+        if j is not None:
+            return [j, i]
+        appearances[target - n] = i
+
 string = "Let's take LeetCode contest"
 print(reverse_words_in_a_string_iii(string))
