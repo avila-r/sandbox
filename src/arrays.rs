@@ -1,3 +1,23 @@
+pub fn reverse_words_iii(s: String) -> String {
+    let (mut chars, mut l) = (s.chars().collect::<Vec<char>>(), 0);
+
+    for i in 0..=chars.len() {
+        if i == chars.len() || chars[i] == ' ' {
+            let mut r = i - 1;
+
+            while l < r {
+                chars.swap(l, r);
+                l += 1;
+                r -= 1;
+            }
+
+            l = i + 1;
+        }
+    }
+
+    chars.iter().collect()
+}
+
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     use std::collections::HashMap;
 
@@ -79,6 +99,31 @@ pub fn search_insert_position(nums: Vec<i32>, target: i32) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_reverse_words_iii() {
+        struct TestCase {
+            input: String,
+            expected: String,
+        }
+
+        let cases = vec![
+            TestCase {
+                input: String::from("Let's take LeetCode contest"),
+                expected: String::from("s'teL ekat edoCteeL tsetnoc"),
+            },
+            TestCase {
+                input: String::from("Mr Ding"),
+                expected: String::from("rM gniD"),
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = reverse_words_iii(case.input.clone());
+
+            assert_eq! {result, case.expected};
+        });
+    }
 
     #[test]
     fn test_two_sum() {
