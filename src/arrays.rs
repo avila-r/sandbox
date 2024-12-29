@@ -55,6 +55,31 @@ pub fn exponential_search(numbers: Vec<i32>, target: i32) -> Option<usize> {
     }
 }
 
+pub fn max_substring_with_occurrences(s: String, max_occurrences: i32) -> Option<usize> {
+    let mut left = 0;
+    let (chars, mut frequencies, mut max) = (
+        s.chars().collect::<Vec<char>>(),
+        std::collections::HashMap::new(),
+        0,
+    );
+
+    for right in 0..chars.len() {
+        frequencies
+            .entry(chars[right])
+            .and_modify(|v| *v += 1)
+            .or_insert(1);
+
+        while frequencies.get(&chars[right]).unwrap_or(&0) > &max_occurrences {
+            frequencies.entry(chars[left]).and_modify(|v| *v -= 1);
+            left += 1;
+        }
+
+        max = max.max(right - left + 1);
+    }
+
+    Some(max)
+}
+
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     use std::collections::HashMap;
 
@@ -286,6 +311,49 @@ mod tests {
 
         cases.iter().for_each(|case| {
             let result = exponential_search(case.numbers.clone(), case.target);
+
+            assert_eq!(result, case.expected);
+        });
+    }
+
+    #[test]
+    fn test_maximum_length_substring_with_occurrences() {
+        struct TestCase {
+            s: String,
+            max_occurrences: i32,
+            expected: Option<usize>,
+        }
+
+        let cases = vec![
+            TestCase {
+                s: "bcbbbcba".to_string(),
+                max_occurrences: 2,
+                expected: Some(4),
+            },
+            TestCase {
+                s: "abcabcbb".to_string(),
+                max_occurrences: 1,
+                expected: Some(3),
+            },
+            TestCase {
+                s: "aaaaaa".to_string(),
+                max_occurrences: 2,
+                expected: Some(2),
+            },
+            TestCase {
+                s: "abccba".to_string(),
+                max_occurrences: 2,
+                expected: Some(6),
+            },
+            TestCase {
+                s: "".to_string(),
+                max_occurrences: 2,
+                expected: Some(0),
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = max_substring_with_occurrences(case.s.clone(), case.max_occurrences);
 
             assert_eq!(result, case.expected);
         });
