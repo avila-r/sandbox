@@ -98,6 +98,24 @@ pub fn first_unique_char(s: String) -> i32 {
     -1
 }
 
+pub fn search(nums: Vec<i32>, target: i32) -> i32 {
+    use std::cmp::Ordering::{Equal, Greater, Less};
+
+    let (mut left, mut right) = (0, nums.len() - 1);
+
+    while left <= right {
+        let mid = left + (right - left) / 2;
+
+        match nums[mid].cmp(&target) {
+            Less => left = mid + 1,
+            Equal => return mid as i32,
+            Greater => right = mid - 1,
+        }
+    }
+
+    -1
+}
+
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     use std::collections::HashMap;
 
@@ -409,6 +427,59 @@ mod tests {
 
         cases.iter().for_each(|case| {
             let result = first_unique_char(case.s.clone());
+
+            assert_eq!(result, case.expected);
+        });
+    }
+
+    #[test]
+    fn test_search() {
+        struct TestCase {
+            nums: Vec<i32>,
+            target: i32,
+            expected: i32,
+        }
+
+        let cases = vec![
+            TestCase {
+                nums: vec![-1, 0, 3, 5, 9, 12],
+                target: 9,
+                expected: 4,
+            },
+            TestCase {
+                nums: vec![-1, 0, 3, 5, 9, 12],
+                target: 2,
+                expected: -1,
+            },
+            TestCase {
+                nums: vec![1, 2, 3, 4, 5],
+                target: 3,
+                expected: 2,
+            },
+            TestCase {
+                nums: vec![10, 20, 30, 40, 50],
+                target: 40,
+                expected: 3,
+            },
+            TestCase {
+                nums: vec![100, 200, 300, 400, 500],
+                target: 600,
+                expected: -1,
+            },
+            TestCase {
+                nums: vec![0, 1, 2, 3, 4],
+                target: 5,
+                expected: -1,
+            },
+            TestCase {
+                nums: vec![2, 4, 6, 8, 10],
+                target: 4,
+                expected: 1,
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = search(case.nums.clone(), case.target);
 
             assert_eq!(result, case.expected);
         });
