@@ -57,6 +57,39 @@ pub fn middle_node(head: Node) -> Node {
     slow
 }
 
+pub fn merge_sorted_lists(mut first: Node, mut second: Node) -> Node {
+    let mut pointer = &mut first;
+
+    while second.is_some() {
+        if pointer.is_none() || second.as_ref()?.val < pointer.as_ref()?.val {
+            std::mem::swap(pointer, &mut second);
+        }
+
+        pointer = &mut pointer.as_mut()?.next;
+    }
+
+    first
+}
+
+pub fn merge_sorted_lists_by_recursion(l1: Node, l2: Node) -> Node {
+    match (l1, l2) {
+        (None, None) => None,
+        (Some(n), None) | (None, Some(n)) => Some(n),
+
+        (Some(left), Some(right)) => match left.val <= right.val {
+            true => Some(Box::new(ListNode {
+                val: left.val,
+                next: self::merge_sorted_lists_by_recursion(left.next, Some(right)),
+            })),
+
+            false => Some(Box::new(ListNode {
+                val: right.val,
+                next: self::merge_sorted_lists_by_recursion(Some(left), right.next),
+            })),
+        },
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -141,6 +174,71 @@ mod tests {
 
             assert_eq! {
                 ListNode::to_vec(result),
+                case.expected
+            };
+        });
+    }
+
+    #[test]
+    fn test_merge_sorted_lists() {
+        struct TestCase {
+            first: Vec<i32>,
+            second: Vec<i32>,
+            expected: Vec<i32>,
+        }
+
+        let cases = vec![
+            TestCase {
+                first: vec![1, 2, 4],
+                second: vec![1, 3, 4],
+                expected: vec![1, 1, 2, 3, 4, 4],
+            },
+            TestCase {
+                first: vec![],
+                second: vec![],
+                expected: vec![],
+            },
+            TestCase {
+                first: vec![],
+                second: vec![0],
+                expected: vec![0],
+            },
+            TestCase {
+                first: vec![5, 6, 7],
+                second: vec![1, 2, 3, 4],
+                expected: vec![1, 2, 3, 4, 5, 6, 7],
+            },
+            TestCase {
+                first: vec![1, 3, 5],
+                second: vec![2, 4, 6],
+                expected: vec![1, 2, 3, 4, 5, 6],
+            },
+            TestCase {
+                first: vec![1],
+                second: vec![2],
+                expected: vec![1, 2],
+            },
+            TestCase {
+                first: vec![1],
+                second: vec![0],
+                expected: vec![0, 1],
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            assert_eq! {
+                ListNode::to_vec(merge_sorted_lists(
+                    ListNode::from(case.first.clone()),
+                    ListNode::from(case.second.clone()),
+                )),
+                case.expected
+            };
+
+            assert_eq! {
+                ListNode::to_vec(merge_sorted_lists_by_recursion(
+                    ListNode::from(case.first.clone()),
+                    ListNode::from(case.second.clone()),
+                )),
                 case.expected
             };
         });
