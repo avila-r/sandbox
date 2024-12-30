@@ -1,3 +1,5 @@
+from typing import *
+
 def reverse_words_in_a_string_iii(s: str) -> str:
     s = list(s)
     l = 0
@@ -86,3 +88,16 @@ def has_cycle(head: Optional[ListNode]) -> bool:
         if head == fast:
             return True
     return False
+
+def bubble_sort(nums: list[int]) -> list[int]:
+    size = len(nums)
+    for _ in nums:
+        print(nums)
+        is_sorted = True
+        for n in range(size - 1):
+            if nums[n] > nums[n + 1]:
+                nums[n + 1], nums[n] = nums[n], nums[n + 1]
+                is_sorted = False
+        if is_sorted:
+            return
+    return nums
