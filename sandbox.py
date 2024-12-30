@@ -101,3 +101,18 @@ def bubble_sort(nums: list[int]) -> list[int]:
         if is_sorted:
             return
     return nums
+
+def quicksort(nums: list[int], left, right):
+    if left >= right:
+        return
+    
+    pivot, i = nums[right], left - 1
+    for j in range(left, right):
+        if nums[j] <= pivot:
+            i += 1
+            nums[i], nums[j] = nums[j], nums[i]
+    nums[i + 1], nums[right] = nums[right], nums[i + 1]
+    sub = i + 1
+    
+    quicksort(nums, left, sub - 1)
+    quicksort(nums, sub + 1, right)
