@@ -20,7 +20,7 @@ impl ListNode {
         current
     }
 
-    pub fn to(head: Option<Box<ListNode>>) -> Vec<i32> {
+    pub fn to_vec(head: Option<Box<ListNode>>) -> Vec<i32> {
         let mut result = vec![];
         let mut current = head;
         while let Some(node) = current {
@@ -42,6 +42,17 @@ pub fn reverse_linked_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>>
     }
 
     new
+}
+
+pub fn middle_node(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+    let (mut slow, mut fast) = (head.clone(), head.and_then(|n| n.next));
+
+    while let Some(n) = fast {
+        slow = slow.and_then(|s| s.next);
+        fast = n.next.and_then(|f| f.next);
+    }
+
+    slow
 }
 
 #[cfg(test)]
@@ -80,14 +91,54 @@ mod tests {
 
         cases.iter().for_each(|case| {
             assert_eq! {
-                ListNode::to(ListNode::from(case.expected.clone())),
+                ListNode::to_vec(ListNode::from(case.expected.clone())),
                 case.expected
             };
 
             let result = reverse_linked_list(ListNode::from(case.input.clone()));
 
             assert_eq! {
-                ListNode::to(result),
+                ListNode::to_vec(result),
+                case.expected
+            };
+        });
+    }
+
+    #[test]
+    fn test_middle_node() {
+        struct TestCase {
+            input: Vec<i32>,
+            expected: Vec<i32>,
+        }
+
+        let cases = vec![
+            TestCase {
+                input: vec![1, 2, 3, 4, 5],
+                expected: vec![3, 4, 5],
+            },
+            TestCase {
+                input: vec![1, 2, 3, 4, 5, 6],
+                expected: vec![4, 5, 6],
+            },
+            TestCase {
+                input: vec![1],
+                expected: vec![1],
+            },
+            TestCase {
+                input: vec![1, 2],
+                expected: vec![2],
+            },
+            TestCase {
+                input: vec![],
+                expected: vec![],
+            },
+        ];
+
+        cases.iter().for_each(|case| {
+            let result = middle_node(ListNode::from(case.input.clone()));
+
+            assert_eq! {
+                ListNode::to_vec(result),
                 case.expected
             };
         });
