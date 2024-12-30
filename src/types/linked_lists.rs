@@ -63,6 +63,21 @@ impl<T: Display + Clone> LinkedList<T> {
         }
     }
 
+    pub fn prepend(&mut self, value: T) {
+        let new = Node::new(value);
+
+        match self.head.take() {
+            Some(old) => {
+                new.borrow_mut().next = Some(old);
+                self.head = Some(new);
+            }
+            None => {
+                self.head = Some(new.clone());
+                self.tail = Some(new);
+            }
+        }
+    }
+
     pub fn pop(&mut self) -> Option<T> {
         if let Some(old) = self.head.take() {
             self.head = old.borrow_mut().next.take();
@@ -109,6 +124,22 @@ impl<T: Display + Clone> DoubleLinkedList<T> {
                 old.borrow_mut().next = Some(new.clone());
                 new.borrow_mut().prev = Some(old);
                 self.tail = Some(new);
+            }
+            None => {
+                self.head = Some(new.clone());
+                self.tail = Some(new);
+            }
+        }
+    }
+
+    pub fn prepend(&mut self, value: T) {
+        let new = Node::new(value);
+
+        match self.head.take() {
+            Some(old) => {
+                new.borrow_mut().next = Some(old);
+                new.borrow_mut().prev = None;
+                self.head = Some(new);
             }
             None => {
                 self.head = Some(new.clone());
