@@ -72,3 +72,9 @@ def reverse_linked_list(head: Optional[ListNode]) -> Optional[ListNode]:
         new = head
         head = node
     return new
+
+def middle_node(head: Optional[ListNode]) -> Optional[ListNode]:
+    fast = head
+    while fast and fast.next:
+        fast, head = fast.next.next, head.next
+    return head
