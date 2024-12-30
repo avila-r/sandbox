@@ -78,3 +78,11 @@ def middle_node(head: Optional[ListNode]) -> Optional[ListNode]:
     while fast and fast.next:
         fast, head = fast.next.next, head.next
     return head
+
+def has_cycle(head: Optional[ListNode]) -> bool:
+    fast = head
+    while fast and fast.next:
+        fast, head = fast.next.next, head.next
+        if head == fast:
+            return True
+    return False
