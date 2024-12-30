@@ -1,7 +1,9 @@
+type Node = Option<Box<ListNode>>;
+
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct ListNode {
     pub val: i32,
-    pub next: Option<Box<ListNode>>,
+    pub next: Node,
 }
 
 impl ListNode {
@@ -10,7 +12,7 @@ impl ListNode {
         ListNode { next: None, val }
     }
 
-    pub fn from(values: Vec<i32>) -> Option<Box<ListNode>> {
+    pub fn from(values: Vec<i32>) -> Node {
         let mut current = None;
         for &value in values.iter().rev() {
             let mut node = Box::new(ListNode::new(value));
@@ -20,7 +22,7 @@ impl ListNode {
         current
     }
 
-    pub fn to_vec(head: Option<Box<ListNode>>) -> Vec<i32> {
+    pub fn to_vec(head: Node) -> Vec<i32> {
         let mut result = vec![];
         let mut current = head;
         while let Some(node) = current {
@@ -31,7 +33,7 @@ impl ListNode {
     }
 }
 
-pub fn reverse_linked_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+pub fn reverse_linked_list(head: Node) -> Node {
     let (mut current, mut new) = (head.as_ref(), None);
 
     while let Some(n) = current {
@@ -44,7 +46,7 @@ pub fn reverse_linked_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>>
     new
 }
 
-pub fn middle_node(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+pub fn middle_node(head: Node) -> Node {
     let (mut slow, mut fast) = (head.clone(), head.and_then(|n| n.next));
 
     while let Some(n) = fast {
