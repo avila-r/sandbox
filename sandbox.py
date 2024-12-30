@@ -58,3 +58,17 @@ def search_insert_position(nums: list[int], val: int) -> int:
         else:
             return mid
     return left
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reverse_linked_list(head: Optional[ListNode]) -> Optional[ListNode]:
+    new = None
+    while head:
+        node = head.next
+        head.next = new
+        new = head
+        head = node
+    return new
