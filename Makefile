@@ -1,6 +1,6 @@
 
 go:
-	go run sandbox.go
+	go test
 
 py:
 	python sandbox.py
