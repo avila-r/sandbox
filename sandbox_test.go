@@ -22,9 +22,12 @@ func Test_BinarySearch(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		result := sandbox.BinarySearch(c.input, c.target)
+		if result := sandbox.BinarySearch(c.input, c.target); result != c.expected {
+			t.Errorf("Failed: input %v, target %d, expected %d, got %d\n",
+				c.input, c.target, c.expected, result)
+		}
 
-		if result != c.expected {
+		if result := sandbox.RecursiveBinarySearch(c.input, c.target, 0, len(c.input)-1); result != c.expected {
 			t.Errorf("Failed: input %v, target %d, expected %d, got %d\n",
 				c.input, c.target, c.expected, result)
 		}
