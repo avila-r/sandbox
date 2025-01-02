@@ -16,7 +16,7 @@ pub struct LinkedList<T> {
 }
 
 #[derive(Debug)]
-pub struct DoubleLinkedList<T> {
+pub struct DoublyLinkedList<T> {
     head: Option<Link<T>>,
     tail: Option<Link<T>>,
 }
@@ -100,7 +100,7 @@ impl<T: Display + Clone> LinkedList<T> {
     }
 }
 
-impl<T: Display + Clone> DoubleLinkedList<T> {
+impl<T: Display + Clone> DoublyLinkedList<T> {
     pub fn new() -> Self {
         Self {
             head: None,
@@ -293,7 +293,7 @@ mod double_linked_list_tests {
     /// Test appending elements to the list
     #[test]
     fn test_append() {
-        let mut list = DoubleLinkedList::new();
+        let mut list = DoublyLinkedList::new();
 
         // Append some elements
         list.append(10);
@@ -317,7 +317,7 @@ mod double_linked_list_tests {
     /// Test popping an element from the list
     #[test]
     fn test_pop() {
-        let mut list = DoubleLinkedList::new();
+        let mut list = DoublyLinkedList::new();
 
         // Append some elements
         list.append(10);
@@ -345,7 +345,7 @@ mod double_linked_list_tests {
     /// Test popping all elements from the list
     #[test]
     fn test_pop_all() {
-        let mut list = DoubleLinkedList::new();
+        let mut list = DoublyLinkedList::new();
 
         // Append some elements
         list.append(10);
@@ -364,7 +364,7 @@ mod double_linked_list_tests {
     /// Test appending and popping elements repeatedly
     #[test]
     fn test_append_and_pop_repeatedly() {
-        let mut list = DoubleLinkedList::new();
+        let mut list = DoublyLinkedList::new();
 
         // Append elements and pop them immediately
         list.append(10);
@@ -382,7 +382,7 @@ mod double_linked_list_tests {
     /// Test printing the list when it is empty
     #[test]
     fn test_print_empty_list() {
-        let list: DoubleLinkedList<i32> = DoubleLinkedList::new();
+        let list: DoublyLinkedList<i32> = DoublyLinkedList::new();
         let expected = "None";
         let mut current = list.head.clone();
         let mut result = String::new();
@@ -399,7 +399,7 @@ mod double_linked_list_tests {
     /// Test the behavior when there's a single element in the list
     #[test]
     fn test_single_element() {
-        let mut list = DoubleLinkedList::new();
+        let mut list = DoublyLinkedList::new();
 
         // Append a single element
         list.append(10);
